@@ -29,7 +29,7 @@ conf_threshold = 0.5
 cls_conf_threshold = 0.5
 
 # ---------------- Prediction Buffer ----------------
-buffer_size = 10
+buffer_size = 5
 prediction_buffer = deque(maxlen=buffer_size)
 
 # ---------------- MediaPipe Hands Setup ----------------
