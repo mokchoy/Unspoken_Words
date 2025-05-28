@@ -73,9 +73,6 @@ def nothing(x): pass
 cv2.namedWindow("Pose Overlay", cv2.WINDOW_NORMAL)
 cv2.resizeWindow("Pose Overlay", img_size_cls, img_size_cls)
 
-cv2.namedWindow(f"Hand ({args.kernel}x{args.kernel})", cv2.WINDOW_NORMAL)
-cv2.resizeWindow(f"Hand ({args.kernel}x{args.kernel})", img_size_cls, img_size_cls)
-
 # ---------------- Load and Scale Landmarks ----------------
 def load_scaled_reference(letter, user_landmarks):
     try:
@@ -114,6 +111,7 @@ def load_scaled_reference(letter, user_landmarks):
 
 # ---------------- Main Loop ----------------
 while True:
+    start_time = time.time()
     ret, frame = cap.read()
     if not ret:
         break
@@ -239,11 +237,17 @@ while True:
                             cv2.line(hand_crop, user_landmarks[start_idx], user_landmarks[end_idx], (0, 255, 255), 2)
 
     if label_text:
-        cv2.putText(display_frame, label_text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 255), 2, cv2.LINE_AA)
+        cv2.putText(display_frame, label_text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 255), 2)
+
+    fps = 1.0 / (time.time() - start_time)
+    cv2.putText(display_frame, f"FPS: {fps:.2f}", (10, 65), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 255), 2)
+
+
+    #if predicted_letter:
+    #with open("results.csv", "a") as f:
+     #   f.write(f"{frame_count},{predicted_letter},{avg_conf:.2f},{fps:.2f}\n")
 
     cv2.imshow("ASL Hand Recognition", display_frame)
-    if input_img is not None:
-        cv2.imshow(f"Hand ({args.kernel}x{args.kernel})", input_img)
     if hand_crop is not None:
         cv2.imshow("Pose Overlay", hand_crop)
 
